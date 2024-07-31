@@ -1,5 +1,10 @@
 const express = require("express");
-const { getNotice, addNotice, updateNotice, deleteNotice } = require("../../controllers/Other/notice.controller");
+const {
+  getNotice,
+  addNotice,
+  updateNotice,
+  deleteNotice,
+} = require("../../controllers/Other/notice.controller");
 const router = express.Router();
 
 router.get("/getNotice", getNotice);

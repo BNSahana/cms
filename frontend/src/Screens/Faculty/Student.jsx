@@ -4,8 +4,9 @@ import Heading from "../../components/Heading";
 import axios from "axios";
 import { baseApiURL } from "../../baseUrl";
 import { FiSearch } from "react-icons/fi";
+
 const Student = () => {
-  const [search, setSearch] = useState();
+  const [search, setSearch] = useState("");
   const [data, setData] = useState({
     enrollmentNo: "",
     firstName: "",
@@ -21,6 +22,7 @@ const Student = () => {
   const [id, setId] = useState();
 
   const searchStudentHandler = (e) => {
+    e.preventDefault();
     setId("");
     setData({
       enrollmentNo: "",
@@ -34,7 +36,6 @@ const Student = () => {
       gender: "",
       profile: "",
     });
-    e.preventDefault();
     toast.loading("Getting Student");
     const headers = {
       "Content-Type": "application/json",
@@ -49,7 +50,6 @@ const Student = () => {
         toast.dismiss();
         if (response.data.success) {
           if (response.data.user.length === 0) {
-            toast.dismiss();
             toast.error("No Student Found!");
           } else {
             toast.success(response.data.message);
@@ -68,70 +68,71 @@ const Student = () => {
             setId(response.data.user[0]._id);
           }
         } else {
-          toast.dismiss();
           toast.error(response.data.message);
         }
       })
       .catch((error) => {
-        toast.dismiss();
         toast.error(error.response.data.message);
         console.error(error);
       });
   };
 
   return (
-    <div className="w-full mx-auto mt-10 flex justify-center items-start flex-col mb-10">
-      <div className="flex justify-between items-center w-full">
-        <Heading title="Student Details" />
-      </div>
-      <div className="my-6 mx-auto w-full">
-        <form
-          className="flex justify-center items-center border-2 border-blue-500 rounded w-[40%] mx-auto"
-          onSubmit={searchStudentHandler}
-        >
+    <div className="w-full mx-auto mt-12 flex flex-col items-center">
+      <Heading title="Student Details" className="mb-6" />
+      <form
+        className="flex items-center border border-gray-300 rounded-lg bg-white shadow-lg p-4 mb-8 w-full max-w-md"
+        onSubmit={searchStudentHandler}
+      >
+        <div className="relative flex-1">
           <input
             type="text"
-            className="px-6 py-3 w-full outline-none"
-            placeholder="Enrollment No."
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
+            placeholder="Enter Enrollment No."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
-          <button className="px-4 text-2xl hover:text-blue-500" type="submit">
-            <FiSearch />
+          <button
+            type="submit"
+            className="absolute right-2 top-1/2 transform -translate-y-1/2 text-blue-600 hover:text-blue-800 transition"
+          >
+            <FiSearch size={20} />
           </button>
-        </form>
-        {id && (
-          <div className="mx-auto w-full bg-blue-50 mt-10 flex justify-between items-center p-10 rounded-md shadow-md">
-            <div>
-              <p className="text-2xl font-semibold">
-                {data.firstName} {data.middleName} {data.lastName}
-              </p>
-              <div className="mt-3">
-                <p className="text-lg font-normal mb-2">
-                  Enrollment No: {data.enrollmentNo}
-                </p>
-                <p className="text-lg font-normal mb-2">
-                  Phone Number: +91 {data.phoneNumber}
-                </p>
-                <p className="text-lg font-normal mb-2">
-                  Email Address: {data.email}
-                </p>
-                <p className="text-lg font-normal mb-2">
-                  Branch: {data.branch}
-                </p>
-                <p className="text-lg font-normal mb-2">
-                  Semester: {data.semester}
-                </p>
-              </div>
-            </div>
+        </div>
+      </form>
+      {id && (
+        <div className="w-full max-w-4xl bg-white p-6 rounded-lg shadow-lg border border-gray-300">
+          <div className="flex items-center space-x-6">
             <img
               src={process.env.REACT_APP_MEDIA_LINK + "/" + data.profile}
               alt="student profile"
-              className="h-[200px] w-[200px] object-cover rounded-lg shadow-md"
+              className="h-40 w-40 object-cover rounded-full shadow-md"
             />
+            <div>
+              <p className="text-3xl font-bold mb-2">
+                {data.firstName} {data.middleName} {data.lastName}
+              </p>
+              <p className="text-lg font-medium mb-1">
+                Enrollment No:{" "}
+                <span className="font-normal">{data.enrollmentNo}</span>
+              </p>
+              <p className="text-lg font-medium mb-1">
+                Phone Number:{" "}
+                <span className="font-normal">+91 {data.phoneNumber}</span>
+              </p>
+              <p className="text-lg font-medium mb-1">
+                Email Address: <span className="font-normal">{data.email}</span>
+              </p>
+              <p className="text-lg font-medium mb-1">
+                Branch: <span className="font-normal">{data.branch}</span>
+              </p>
+              <p className="text-lg font-medium mb-1">
+                Semester: <span className="font-normal">{data.semester}</span>
+              </p>
+            </div>
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 };

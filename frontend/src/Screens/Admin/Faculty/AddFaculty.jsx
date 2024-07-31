@@ -131,7 +131,7 @@ const AddFaculty = () => {
           id="firstname"
           value={data.firstName}
           onChange={(e) => setData({ ...data, firstName: e.target.value })}
-          className="w-full bg-blue-50 rounded border focus:border-dark-green focus:bg-secondary-light focus:ring-2 focus:ring-light-green text-base outline-none py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
+          className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500"
         />
       </div>
       <div className="w-[40%]">
@@ -143,7 +143,7 @@ const AddFaculty = () => {
           id="middlename"
           value={data.middleName}
           onChange={(e) => setData({ ...data, middleName: e.target.value })}
-          className="w-full bg-blue-50 rounded border focus:border-dark-green focus:bg-secondary-light focus:ring-2 focus:ring-light-green text-base outline-none py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
+          className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500"
         />
       </div>
       <div className="w-[40%]">
@@ -155,7 +155,7 @@ const AddFaculty = () => {
           id="lastname"
           value={data.lastName}
           onChange={(e) => setData({ ...data, lastName: e.target.value })}
-          className="w-full bg-blue-50 rounded border focus:border-dark-green focus:bg-secondary-light focus:ring-2 focus:ring-light-green text-base outline-none py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
+          className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500"
         />
       </div>
       <div className="w-[40%]">
@@ -167,7 +167,7 @@ const AddFaculty = () => {
           id="employeeId"
           value={data.employeeId}
           onChange={(e) => setData({ ...data, employeeId: e.target.value })}
-          className="w-full bg-blue-50 rounded border focus:border-dark-green focus:bg-secondary-light focus:ring-2 focus:ring-light-green text-base outline-none py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
+          className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500"
         />
       </div>
       <div className="w-[40%]">
@@ -179,7 +179,7 @@ const AddFaculty = () => {
           id="email"
           value={data.email}
           onChange={(e) => setData({ ...data, email: e.target.value })}
-          className="w-full bg-blue-50 rounded border focus:border-dark-green focus:bg-secondary-light focus:ring-2 focus:ring-light-green text-base outline-none py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
+          className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500"
         />
       </div>
       <div className="w-[40%]">
@@ -191,7 +191,7 @@ const AddFaculty = () => {
           id="phoneNumber"
           value={data.phoneNumber}
           onChange={(e) => setData({ ...data, phoneNumber: e.target.value })}
-          className="w-full bg-blue-50 rounded border focus:border-dark-green focus:bg-secondary-light focus:ring-2 focus:ring-light-green text-base outline-none py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
+          className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500"
         />
       </div>
       <div className="w-[40%]">
@@ -200,7 +200,7 @@ const AddFaculty = () => {
         </label>
         <select
           id="branch"
-          className="px-2 bg-blue-50 py-3 rounded-sm text-base w-full accent-blue-700 mt-1"
+          className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 transition"
           value={data.department}
           onChange={(e) => setData({ ...data, department: e.target.value })}
         >
@@ -223,7 +223,7 @@ const AddFaculty = () => {
           id="post"
           value={data.post}
           onChange={(e) => setData({ ...data, post: e.target.value })}
-          className="w-full bg-blue-50 rounded border focus:border-dark-green focus:bg-secondary-light focus:ring-2 focus:ring-light-green text-base outline-none py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
+          className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500"
         />
       </div>
       <div className="w-[95%] flex justify-evenly items-center">
@@ -233,7 +233,7 @@ const AddFaculty = () => {
           </label>
           <select
             id="gender"
-            className="px-2 bg-blue-50 py-3 rounded-sm text-base w-full accent-blue-700 mt-1"
+            className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 transition"
             value={data.gender}
             onChange={(e) => setData({ ...data, gender: e.target.value })}
           >
@@ -251,7 +251,7 @@ const AddFaculty = () => {
             id="experience"
             value={data.experience}
             onChange={(e) => setData({ ...data, experience: e.target.value })}
-            className="w-full bg-blue-50 rounded border focus:border-dark-green focus:bg-secondary-light focus:ring-2 focus:ring-light-green text-base outline-none py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
+            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500"
           />
         </div>
         <div className="w-[25%]">
@@ -260,7 +260,7 @@ const AddFaculty = () => {
           </label>
           <label
             htmlFor="file"
-            className="px-2 bg-blue-50 py-3 rounded-sm text-base w-full flex justify-center items-center cursor-pointer"
+            className="px-2 border border-gray-300  py-3 rounded-md text-base w-full flex justify-center items-center cursor-pointer"
           >
             Upload
             <span className="ml-2">

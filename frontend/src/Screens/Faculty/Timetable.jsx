@@ -5,13 +5,14 @@ import Heading from "../../components/Heading";
 import { AiOutlineClose } from "react-icons/ai";
 import toast from "react-hot-toast";
 import { baseApiURL } from "../../baseUrl";
+
 const Timetable = () => {
   const [addselected, setAddSelected] = useState({
     branch: "",
     semester: "",
   });
   const [file, setFile] = useState();
-  const [branch, setBranch] = useState();
+  const [branch, setBranch] = useState([]);
   const [previewUrl, setPreviewUrl] = useState("");
 
   useEffect(() => {
@@ -19,11 +20,10 @@ const Timetable = () => {
   }, []);
 
   const getBranchData = () => {
-    const headers = {
-      "Content-Type": "application/json",
-    };
     axios
-      .get(`${baseApiURL()}/branch/getBranch`, { headers })
+      .get(`${baseApiURL()}/branch/getBranch`, {
+        headers: { "Content-Type": "application/json" },
+      })
       .then((response) => {
         if (response.data.success) {
           setBranch(response.data.branches);
@@ -45,127 +45,138 @@ const Timetable = () => {
   };
 
   const addTimetableHandler = () => {
-    toast.loading("Adding Timetable");
-    const headers = {
-      "Content-Type": "multipart/form-data",
-    };
+    toast.loading("Adding Timetable...");
     const formData = new FormData();
     formData.append("branch", addselected.branch);
     formData.append("semester", addselected.semester);
     formData.append("type", "timetable");
     formData.append("timetable", file);
+
     axios
       .post(`${baseApiURL()}/timetable/addTimetable`, formData, {
-        headers: headers,
+        headers: { "Content-Type": "multipart/form-data" },
       })
       .then((response) => {
         toast.dismiss();
         if (response.data.success) {
           toast.success(response.data.message);
-          setAddSelected({
-            branch: "",
-            semester: "",
-          });
-          setFile("");
+          setAddSelected({ branch: "", semester: "" });
+          setFile(null);
+          setPreviewUrl("");
         } else {
           toast.error(response.data.message);
         }
       })
       .catch((error) => {
         toast.dismiss();
-        console.log("FIle error", error);
-
         toast.error(error.response.data.message);
       });
   };
+
   return (
-    <div className="w-full mx-auto mt-10 flex justify-center items-start flex-col mb-10">
-      <div className="flex justify-between items-center w-full">
-        <Heading title={`Upload Timetable`} />
+    <div className="w-full max-w-3xl mx-auto p-8 bg-white shadow-lg rounded-lg border border-gray-200">
+      <div className="flex justify-between items-center mb-6">
+        <Heading title="Upload Timetable" />
       </div>
-      <div className="w-full flex justify-evenly items-center mt-12">
-        <div className="w-1/2 flex flex-col justify-center items-center">
-          <p className="mb-4 text-xl font-medium">Add Timetable</p>
-          <select
-            id="branch"
-            className="px-2 bg-blue-50 py-3 rounded-sm text-base w-[80%] accent-blue-700 mt-4"
-            value={addselected.branch}
-            onChange={(e) =>
-              setAddSelected({ ...addselected, branch: e.target.value })
-            }
-          >
-            <option defaultValue>-- Select Branch --</option>
-            {branch &&
-              branch.map((branch) => {
-                return (
-                  <option value={branch.name} key={branch.name}>
-                    {branch.name}
-                  </option>
-                );
-              })}
-          </select>
-          <select
-            onChange={(e) =>
-              setAddSelected({ ...addselected, semester: e.target.value })
-            }
-            value={addselected.semester}
-            name="branch"
-            id="branch"
-            className="px-2 bg-blue-50 py-3 rounded-sm text-base w-[80%] accent-blue-700 mt-4"
-          >
-            <option defaultValue>-- Select Semester --</option>
-            <option value="1">1st Semester</option>
-            <option value="2">2nd Semester</option>
-            <option value="3">3rd Semester</option>
-            <option value="4">4th Semester</option>
-            <option value="5">5th Semester</option>
-            <option value="6">6th Semester</option>
-            <option value="7">7th Semester</option>
-            <option value="8">8th Semester</option>
-          </select>
-          {!addselected.link && (
+      <div className="flex flex-col items-center">
+        <p className="text-xl font-medium mb-4">Add Timetable</p>
+        <div className="w-full flex flex-col gap-4 mb-8">
+          <div className="bg-gray-50 p-4 rounded-lg shadow-sm border border-gray-200">
             <label
-              htmlFor="upload"
-              className="px-2 bg-blue-50 py-3 rounded-sm text-base w-[80%] mt-4 flex justify-center items-center cursor-pointer"
+              htmlFor="branch"
+              className="block text-sm font-medium text-gray-700 mb-2"
             >
-              Select Timetable
-              <span className="ml-2">
-                <FiUpload />
-              </span>
+              Select Branch
             </label>
-          )}
+            <select
+              id="branch"
+              className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 transition"
+              value={addselected.branch}
+              onChange={(e) =>
+                setAddSelected({ ...addselected, branch: e.target.value })
+              }
+            >
+              <option value="">-- Select Branch --</option>
+              {branch.map((b) => (
+                <option value={b.name} key={b.name}>
+                  {b.name}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className="bg-gray-50 p-4 rounded-lg shadow-sm border border-gray-200">
+            <label
+              htmlFor="semester"
+              className="block text-sm font-medium text-gray-700 mb-2"
+            >
+              Select Semester
+            </label>
+            <select
+              id="semester"
+              className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 transition"
+              value={addselected.semester}
+              onChange={(e) =>
+                setAddSelected({ ...addselected, semester: e.target.value })
+              }
+            >
+              <option value="">-- Select Semester --</option>
+              {[...Array(8)].map((_, i) => (
+                <option value={i + 1} key={i + 1}>
+                  {i + 1}st Semester
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <label
+            htmlFor="upload"
+            className={`flex items-center justify-between px-4 py-3 bg-gray-50 rounded-lg border border-gray-300 shadow-sm cursor-pointer transition ${
+              file ? "bg-blue-100" : "hover:bg-gray-200"
+            }`}
+          >
+            <span className="text-base">
+              {file ? "Selected Timetable" : "Select Timetable"}
+            </span>
+            <FiUpload className="text-xl" />
+          </label>
+
           {previewUrl && (
             <p
-              className="px-2 border-2 border-blue-500 py-2 rounded text-base w-[80%] mt-4 flex justify-center items-center cursor-pointer"
+              className="flex items-center justify-between px-4 py-2 bg-red-50 border border-red-300 rounded-lg text-red-500 cursor-pointer transition hover:bg-red-100"
               onClick={() => {
-                setFile("");
+                setFile(null);
                 setPreviewUrl("");
               }}
             >
               Remove Selected Timetable
-              <span className="ml-2">
-                <AiOutlineClose />
-              </span>
+              <AiOutlineClose className="text-xl" />
             </p>
           )}
+
           <input
             type="file"
-            name="upload"
             id="upload"
-            accept="image/*"
+            accept="application/pdf"
             hidden
             onChange={handleFileChange}
           />
-          <button
-            className="bg-blue-500 text-white mt-8 px-4 py-2 rounded-sm"
-            onClick={addTimetableHandler}
-          >
-            Add Timetable
-          </button>
-          {previewUrl && (
-            <img className="mt-6" src={previewUrl} alt="timetable" />
-          )}
         </div>
+
+        <button
+          className="bg-blue-600 text-white px-6 py-3 rounded-lg shadow-md hover:bg-blue-700 transition-colors"
+          onClick={addTimetableHandler}
+        >
+          Add Timetable
+        </button>
+
+        {previewUrl && (
+          <img
+            className="mt-6 max-w-full h-auto rounded-lg shadow-sm"
+            src={previewUrl}
+            alt="Preview"
+          />
+        )}
       </div>
     </div>
   );

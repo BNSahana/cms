@@ -1,11 +1,10 @@
 const express = require('express');
-const { createReport, getReports, updateReport, deleteReport} = require('../../controllers/Other/weeklyReport.controller');
-
 const router = express.Router();
+const weeklyReportController = require('../../controllers/Other/weeklyReport.controller');
 
-router.post('/createweeklyReport', createReport);
-router.get('/getweeklyReports', getReports);
-router.put('updateweeklyReport/:id',updateReport);
-router.delete('deleteweeklyReport/:id', deleteReport);
+router.post('/createweeklyReport', weeklyReportController.createReport);
+router.get('/', weeklyReportController.getAllReports);
+router.put('/:id', weeklyReportController.updateReport);
+router.delete('/:id', weeklyReportController.deleteReport);
 
 module.exports = router;

@@ -112,31 +112,32 @@ const Marks = () => {
   };
 
   return (
-    <div className="w-full mx-auto flex justify-center items-start flex-col my-10">
-      <div className="relative flex justify-between items-center w-full">
+    <div className="w-full max-w-4xl mx-auto p-8 bg-white shadow-lg rounded-lg border border-gray-200">
+      <div className="relative flex justify-between items-center mb-6">
         <Heading title="Upload Marks" />
         {studentData.length > 0 && (
           <button
-            className="absolute right-2 flex justify-center items-center border-2 border-red-500 px-3 py-2 rounded text-red-500"
+            className="absolute right-4 top-1/2 transform -translate-y-1/2 flex items-center bg-red-100 text-red-500 border border-red-300 px-4 py-2 rounded-lg shadow-sm hover:bg-red-200 transition-colors"
             onClick={resetValueHandler}
           >
-            <span className="mr-2">
-              <BiArrowBack className="text-red-500" />
-            </span>
+            <BiArrowBack className="text-lg mr-2" />
             Close
           </button>
         )}
       </div>
       {studentData.length === 0 ? (
         <>
-          <div className="mt-10 w-full flex justify-evenly items-center gap-x-6">
-            <div className="w-full">
-              <label htmlFor="branch" className="leading-7 text-base">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+            <div className="bg-gray-50 p-4 rounded-lg shadow-sm border border-gray-200">
+              <label
+                htmlFor="branch"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
                 Select Branch
               </label>
               <select
                 id="branch"
-                className="px-2 bg-blue-50 py-3 rounded-sm text-base w-full mt-1"
+                className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 transition"
                 value={selected.branch}
                 onChange={(e) =>
                   setSelected({ ...selected, branch: e.target.value })
@@ -150,13 +151,16 @@ const Marks = () => {
                 ))}
               </select>
             </div>
-            <div className="w-full">
-              <label htmlFor="semester" className="leading-7 text-base">
+            <div className="bg-gray-50 p-4 rounded-lg shadow-sm border border-gray-200">
+              <label
+                htmlFor="semester"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
                 Select Semester
               </label>
               <select
                 id="semester"
-                className="px-2 bg-blue-50 py-3 rounded-sm text-base w-full mt-1"
+                className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 transition"
                 value={selected.semester}
                 onChange={(e) =>
                   setSelected({ ...selected, semester: e.target.value })
@@ -170,13 +174,16 @@ const Marks = () => {
                 ))}
               </select>
             </div>
-            <div className="w-full">
-              <label htmlFor="subject" className="leading-7 text-base">
+            <div className="bg-gray-50 p-4 rounded-lg shadow-sm border border-gray-200">
+              <label
+                htmlFor="subject"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
                 Select Subject
               </label>
               <select
                 id="subject"
-                className="px-2 bg-blue-50 py-3 rounded-sm text-base w-full mt-1"
+                className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 transition"
                 value={selected.subject}
                 onChange={(e) =>
                   setSelected({ ...selected, subject: e.target.value })
@@ -190,13 +197,16 @@ const Marks = () => {
                 ))}
               </select>
             </div>
-            <div className="w-full">
-              <label htmlFor="examType" className="leading-7 text-base">
+            <div className="bg-gray-50 p-4 rounded-lg shadow-sm border border-gray-200">
+              <label
+                htmlFor="examType"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
                 Select Exam Type
               </label>
               <select
                 id="examType"
-                className="px-2 bg-blue-50 py-3 rounded-sm text-base w-full mt-1"
+                className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 transition"
                 value={selected.examType}
                 onChange={(e) =>
                   setSelected({ ...selected, examType: e.target.value })
@@ -209,7 +219,7 @@ const Marks = () => {
             </div>
           </div>
           <button
-            className="bg-blue-50 px-4 py-2 mt-8 mx-auto rounded border-2 border-blue-500 text-black"
+            className="block mx-auto bg-blue-600 text-white px-6 py-3 rounded-lg shadow-md hover:bg-blue-700 transition-colors"
             onClick={loadStudentDetails}
           >
             Load Student Data
@@ -217,26 +227,26 @@ const Marks = () => {
         </>
       ) : (
         <>
-          <p className="mt-4 text-lg">
+          <p className="text-lg text-gray-700 mb-6">
             Upload {selected.examType} Marks for {selected.branch} Semester{" "}
             {selected.semester} of {selected.subject}
           </p>
           <div
-            className="w-full flex flex-wrap justify-center items-center mt-8 gap-4"
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
             id="markContainer"
           >
             {studentData.map((student) => (
               <div
                 key={student.enrollmentNo}
-                className="w-[30%] flex justify-between items-center border-2 border-blue-500 rounded"
+                className="bg-white border border-gray-300 rounded-lg shadow-sm p-4 flex items-center justify-between"
                 id={student.enrollmentNo}
               >
-                <p className="text-lg px-4 w-1/2 bg-blue-50">
+                <p className="text-sm font-medium text-gray-700">
                   {student.enrollmentNo}
                 </p>
                 <input
                   type="number"
-                  className="px-6 py-2 focus:ring-0 outline-none w-1/2"
+                  className="px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 outline-none transition"
                   placeholder="Enter Marks"
                   id={`${student.enrollmentNo}marks`}
                 />
@@ -244,7 +254,7 @@ const Marks = () => {
             ))}
           </div>
           <button
-            className="bg-blue-500 px-6 py-3 mt-8 mx-auto rounded text-white"
+            className="block mx-auto bg-blue-600 text-white px-6 py-3 mt-8 rounded-lg shadow-md hover:bg-blue-700 transition-colors"
             onClick={submitMarksHandler}
           >
             Upload Student Marks

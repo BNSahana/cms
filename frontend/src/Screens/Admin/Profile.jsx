@@ -5,6 +5,7 @@ import { useLocation } from "react-router-dom";
 import { setUserData } from "../../redux/actions";
 import { baseApiURL } from "../../baseUrl";
 import toast from "react-hot-toast";
+
 const Profile = () => {
   const [showPass, setShowPass] = useState(false);
   const router = useLocation();
@@ -14,6 +15,7 @@ const Profile = () => {
     new: "",
     current: "",
   });
+
   useEffect(() => {
     const headers = {
       "Content-Type": "application/json",
@@ -22,19 +24,18 @@ const Profile = () => {
       .post(
         `${baseApiURL()}/${router.state.type}/details/getDetails`,
         { employeeId: router.state.loginid },
-        {
-          headers: headers,
-        }
+        { headers }
       )
       .then((response) => {
         if (response.data.success) {
-          setData(response.data.user[0]);
+          const userData = response.data.user[0];
+          setData(userData);
           dispatch(
             setUserData({
-              fullname: `${response.data.user[0].firstName} ${response.data.user[0].middleName} ${response.data.user[0].lastName}`,
-              semester: response.data.user[0].semester,
-              enrollmentNo: response.data.user[0].enrollmentNo,
-              branch: response.data.user[0].branch,
+              fullname: `${userData.firstName} ${userData.middleName} ${userData.lastName}`,
+              semester: userData.semester,
+              enrollmentNo: userData.enrollmentNo,
+              branch: userData.branch,
             })
           );
         } else {
@@ -43,6 +44,7 @@ const Profile = () => {
       })
       .catch((error) => {
         console.error(error);
+        toast.error("Failed to fetch user details.");
       });
   }, [dispatch, router.state.loginid, router.state.type]);
 
@@ -55,9 +57,7 @@ const Profile = () => {
       .post(
         `${baseApiURL()}/admin/auth/login`,
         { loginid: router.state.loginid, password: password.current },
-        {
-          headers: headers,
-        }
+        { headers }
       )
       .then((response) => {
         if (response.data.success) {
@@ -67,7 +67,7 @@ const Profile = () => {
         }
       })
       .catch((error) => {
-        toast.error(error.response.data.message);
+        toast.error("Failed to verify current password.");
         console.error(error);
       });
   };
@@ -80,9 +80,7 @@ const Profile = () => {
       .put(
         `${baseApiURL()}/admin/auth/update/${id}`,
         { loginid: router.state.loginid, password: password.new },
-        {
-          headers: headers,
-        }
+        { headers }
       )
       .then((response) => {
         if (response.data.success) {
@@ -93,78 +91,89 @@ const Profile = () => {
         }
       })
       .catch((error) => {
-        toast.error(error.response.data.message);
+        toast.error("Failed to change password.");
         console.error(error);
       });
   };
 
+  if (!data)
+    return (
+      <div className="w-full max-w-4xl mx-auto my-8 p-8 text-center">
+        Loading...
+      </div>
+    );
+
   return (
-    <div className="w-full mx-auto my-8 flex justify-between items-start">
-      {data && (
-        <>
-          <div>
-            <p className="text-2xl font-semibold">
-              Hello {data.firstName} {data.middleName} {data.lastName}👋
-            </p>
-            <div className="mt-3">
-              <p className="text-lg font-normal mb-2">
-                Employee Id: {data.employeeId}
-              </p>
-              <p className="text-lg font-normal mb-2">
-                Phone Number: +91 {data.phoneNumber}
-              </p>
-              <p className="text-lg font-normal mb-2">
-                Email Address: {data.email}
-              </p>
-            </div>
-            <button
-              className={`${
-                showPass ? "bg-red-100 text-red-600" : "bg-blue-600 text-white"
-              }  px-3 py-1 rounded mt-4`}
-              onClick={() => setShowPass(!showPass)}
-            >
-              {!showPass ? "Change Password" : "Close Change Password"}
-            </button>
-            {showPass && (
-              <form
-                className="mt-4 border-t-2 border-blue-500 flex flex-col justify-center items-start"
-                onSubmit={checkPasswordHandler}
-              >
-                <input
-                  type="password"
-                  value={password.current}
-                  onChange={(e) =>
-                    setPassword({ ...password, current: e.target.value })
-                  }
-                  placeholder="Current Password"
-                  className="px-3 py-1 border-2 border-blue-500 outline-none rounded mt-4"
-                />
-                <input
-                  type="password"
-                  value={password.new}
-                  onChange={(e) =>
-                    setPassword({ ...password, new: e.target.value })
-                  }
-                  placeholder="New Password"
-                  className="px-3 py-1 border-2 border-blue-500 outline-none rounded mt-4"
-                />
-                <button
-                  className="mt-4 hover:border-b-2 hover:border-blue-500"
-                  onClick={checkPasswordHandler}
-                  type="submit"
-                >
-                  Change Password
-                </button>
-              </form>
-            )}
-          </div>
+    <div className="w-full max-w-4xl mx-auto my-8 p-8 bg-gradient-to-r from-blue-50 via-green-50 to-yellow-50 shadow-lg rounded-lg border border-gray-300">
+      <div className="flex flex-col md:flex-row items-center md:items-start space-y-4 md:space-y-0 md:space-x-6">
+        <div className="md:w-1/3 flex justify-center">
           <img
-            src={process.env.REACT_APP_MEDIA_LINK + "/" + data.profile}
+            src={`${process.env.REACT_APP_MEDIA_LINK}/${data.profile}`}
             alt="student profile"
-            className="h-[200px] w-[200px] object-cover rounded-lg shadow-md"
+            className="h-48 w-48 object-cover rounded-full border-4 border-gradient-to-r from-blue-400 via-green-400 to-yellow-400 shadow-md"
           />
-        </>
-      )}
+        </div>
+        <div className="md:w-2/3">
+          <p className="text-4xl font-bold text-gray-800 mb-4">
+            Hello, {data.firstName} {data.middleName} {data.lastName} 👋
+          </p>
+          <div className="space-y-2 text-lg text-gray-700 mb-4">
+            <p>
+              <strong className="text-gray-900">Employee Id:</strong>{" "}
+              {data.employeeId}
+            </p>
+            <p>
+              <strong className="text-gray-900">Phone Number:</strong> +91{" "}
+              {data.phoneNumber}
+            </p>
+            <p>
+              <strong className="text-gray-900">Email Address:</strong>{" "}
+              {data.email}
+            </p>
+          </div>
+          <button
+            className={`px-4 py-2 rounded-lg transition-all duration-300 ${
+              showPass
+                ? "bg-red-100 text-red-600"
+                : "bg-gradient-to-r from-blue-500 to-teal-500 text-white"
+            } hover:opacity-80`}
+            onClick={() => setShowPass(!showPass)}
+          >
+            {showPass ? "Close Change Password" : "Change Password"}
+          </button>
+          {showPass && (
+            <form
+              className="mt-6 border-t-2 border-blue-500 pt-4 flex flex-col gap-4"
+              onSubmit={checkPasswordHandler}
+            >
+              <input
+                type="password"
+                value={password.current}
+                onChange={(e) =>
+                  setPassword({ ...password, current: e.target.value })
+                }
+                placeholder="Current Password"
+                className="px-4 py-2 border-2 border-gray-300 outline-none rounded-lg transition-colors duration-300 focus:border-blue-600"
+              />
+              <input
+                type="password"
+                value={password.new}
+                onChange={(e) =>
+                  setPassword({ ...password, new: e.target.value })
+                }
+                placeholder="New Password"
+                className="px-4 py-2 border-2 border-gray-300 outline-none rounded-lg transition-colors duration-300 focus:border-blue-600"
+              />
+              <button
+                className="bg-gradient-to-r from-blue-500 to-teal-500 text-white px-4 py-2 rounded-lg transition-all duration-300 hover:bg-blue-700"
+                type="submit"
+              >
+                Change Password
+              </button>
+            </form>
+          )}
+        </div>
+      </div>
     </div>
   );
 };

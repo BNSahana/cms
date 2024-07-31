@@ -1,36 +1,45 @@
 const WeeklyReport = require('../../models/Other/weeklyReport.model');
+const FacultyDetail = require('../../models/Faculty/details.model'); // Import the Faculty Detail model
 
 exports.createReport = async (req, res) => {
   try {
     const {
-      facultyId,
+      employeeId,
       course,
       title,
       hoursAllotted,
       hoursTaken,
       percentagePlanned,
       percentageCovered,
+      totalPercentageCovered,
+      totalPercentageRemaining,
       challenges,
       goals,
     } = req.body;
 
-    const previousReports = await WeeklyReport.find({ facultyId, course });
+    // Validate that the employeeId exists in the FacultyDetail collection
+    const facultyDetail = await FacultyDetail.findOne({ employeeId });
+    if (!facultyDetail) {
+      return res.status(404).json({ error: 'Employee not found' });
+    }
 
+    // Calculate total covered percentage
+    const previousReports = await WeeklyReport.find({ employeeId, course });
     const totalCovered = previousReports.reduce(
       (acc, report) => acc + report.percentageCovered,
       0
     ) + percentageCovered;
 
     const report = new WeeklyReport({
-      facultyId,
+      employeeId,
       course,
       title,
       hoursAllotted,
       hoursTaken,
       percentagePlanned,
       percentageCovered,
-      totalPercentageCovered: totalCovered,
-      totalPercentageRemaining: 100 - totalCovered,
+      totalPercentageCovered: totalPercentageCovered || totalCovered,
+      totalPercentageRemaining: totalPercentageRemaining || (100 - totalCovered),
       challenges,
       goals,
     });
@@ -42,12 +51,13 @@ exports.createReport = async (req, res) => {
   }
 };
 
-exports.getReports = async (req, res) => {
+exports.getAllReports = async (req, res) => {
   try {
-    const reports = await WeeklyReport.find().populate('facultyId', 'name');
+    const reports = await WeeklyReport.find();
     res.status(200).json(reports);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error('Error fetching reports:', error);
+    res.status(500).json({ message: 'Error fetching reports.' });
   }
 };
 
@@ -61,6 +71,8 @@ exports.updateReport = async (req, res) => {
       hoursTaken,
       percentagePlanned,
       percentageCovered,
+      totalPercentageCovered,
+      totalPercentageRemaining,
       challenges,
       goals,
     } = req.body;
@@ -75,9 +87,15 @@ exports.updateReport = async (req, res) => {
     report.hoursAllotted = hoursAllotted || report.hoursAllotted;
     report.hoursTaken = hoursTaken || report.hoursTaken;
     report.percentagePlanned = percentagePlanned || report.percentagePlanned;
-    report.percentageCovered = percentageCovered || report.percentageCovered;
-    report.totalPercentageCovered = report.totalPercentageCovered - report.percentageCovered + percentageCovered;
-    report.totalPercentageRemaining = 100 - report.totalPercentageCovered;
+
+    // Update the total covered percentage and remaining percentage
+    if (percentageCovered !== undefined) {
+      const previousCovered = report.percentageCovered;
+      report.percentageCovered = percentageCovered;
+      report.totalPercentageCovered = totalPercentageCovered || (report.totalPercentageCovered - previousCovered + percentageCovered);
+      report.totalPercentageRemaining = totalPercentageRemaining || (100 - report.totalPercentageCovered);
+    }
+
     report.challenges = challenges || report.challenges;
     report.goals = goals || report.goals;
 
@@ -88,7 +106,6 @@ exports.updateReport = async (req, res) => {
   }
 };
 
-// Delete Report
 exports.deleteReport = async (req, res) => {
   try {
     const { id } = req.params;
